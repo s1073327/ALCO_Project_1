@@ -21,7 +21,7 @@ struct labelPos
 };
 
 //global variable
-vector<labelPos> label;				//¦pªG«ü¥O¦³label¡A¦s¦æ¼Æ
+vector<labelPos> label;				//å¦‚æœæŒ‡ä»¤æœ‰labelï¼Œå­˜è¡Œæ•¸
 
 string decimal_to_binary(string decimal, int zeroize = 5)
 {
@@ -52,7 +52,7 @@ string decimal_to_binary(string decimal, int zeroize = 5)
 		dec /= 2;
 	}
 
-	//¸É0
+	//è£œ0
 	while (returnn.size() != zeroize)
 	{
 		returnn += '0';
@@ -85,7 +85,7 @@ void label_detected(vector<string>& input)
 		{
 			tmp.clear();
 
-			//±N§ä¨ìlabel ªº¦æ¼ÆÀx¦s
+			//å°‡æ‰¾åˆ°label çš„è¡Œæ•¸å„²å­˜
 			for (int j = 0; input[i][j] != ':'; ++j)
 			{
 				tmp += input[i][j];
@@ -101,21 +101,21 @@ void label_detected(vector<string>& input)
 
 void R_type(Opcode& find, string& rd, string& rs1, string& rs2)
 {
-	//¦L¥Xresult
+	//å°å‡ºresult
 	cout << find.funct7 << " " << decimal_to_binary(rs2) << " " << decimal_to_binary(rs1) << " "
 		<< find.funct3 << " " << decimal_to_binary(rd) << " " << find.opcode << endl;
 }
 
 void I_type(Opcode& find, string& rd, string& rs1, string& offset)
 {
-	//¦L¥Xresult
+	//å°å‡ºresult
 	cout << decimal_to_binary(offset, 12) << " " << decimal_to_binary(rs1) << " "
 		<< find.funct3 << " " << decimal_to_binary(rd) << " " << find.opcode << endl;
 }
 
 void S_type(Opcode& find, string& rs2, string& offset, string& rs1)
 {
-	//¦L¥Xresult
+	//å°å‡ºresult
 	string Roffset = decimal_to_binary(offset, 12);
 
 	for (int i = 5; i < 12; ++i)
@@ -138,6 +138,7 @@ void I_type_num(Opcode& find, string& rd, string& rs1, string& imm)
 {
 	int num = stoi(imm);
 
+	// Determine whether negative or not
 	cout << (num < 0) ? 1 : 0;
 
 	/*if (num < 0)
@@ -149,24 +150,24 @@ void I_type_num(Opcode& find, string& rd, string& rs1, string& imm)
 		cout << "0";
 	}*/
 
-	//¦L¥Xresult
+	//å°å‡ºresult
 	cout << decimal_to_binary(imm, 12) << " " << decimal_to_binary(rs1) << " "
 		<< find.funct3 << " " << decimal_to_binary(rd) << " " << find.opcode << endl;
 }
 
 void I_type_M(Opcode& find, string& rd, string& rs1, string& imm)
 {
-	//¦L¥Xresult
+	//å°å‡ºresult
 	cout << find.funct7 << " " << decimal_to_binary(imm) << " " << decimal_to_binary(rs1) << " "
 		<< find.funct3 << " " << decimal_to_binary(rd) << " " << find.opcode << endl;
 }
 
 void B_type(Opcode& findOp, string& rs1, string& rs2, string& offset)
 {
-	//label ³B²z
+	//label è™•ç†
 	string simm;
 
-	//Á×§K§ä¤£¨ìlabel¡A¾ã­Óµ{¦¡crash
+	//é¿å…æ‰¾ä¸åˆ°labelï¼Œæ•´å€‹ç¨‹å¼crash
 	bool exist = false;
 
 	for (int i = 0; i < label.size(); ++i)
@@ -210,17 +211,17 @@ void B_type(Opcode& findOp, string& rs1, string& rs2, string& offset)
 
 void UJ_type(Opcode& findOp, string& rd, string& offset)
 {
-	//label ³B²z
+	//label è™•ç†
 	string simm;
 
-	//Á×§K§ä¤£¨ìlabel¡A¾ã­Óµ{¦¡crash
+	//é¿å…æ‰¾ä¸åˆ°labelï¼Œæ•´å€‹ç¨‹å¼crash
 	bool exist = false;
 
 	for (int i = 0; i < label.size(); ++i)
 	{
 		if (offset == label[i].name)
 		{
-			//­«·sÀò¨úlabel¡A¦]¬°¹w³]b type label ¥u»İ12¦ì
+			//é‡æ–°ç²å–labelï¼Œå› ç‚ºé è¨­b type label åªéœ€12ä½
 			simm = decimal_to_binary(label[i].pos, 20);
 			exist = true;
 			break;
@@ -256,15 +257,15 @@ void UJ_type(Opcode& findOp, string& rd, string& offset)
 
 void toMachineCode(string input, vector<Opcode>& instruction)
 {
-	//¤À³Îinput
+	//åˆ†å‰²input
 	string nm, rd, rs1, rs2, imm, offset;
 
 	stringstream ss(input);
 
-	//¨ú±oname­n§PÂ_type
+	//å–å¾—nameè¦åˆ¤æ–·type
 	getline(ss, nm, ' ');
 
-	//±qvector§ä¹ïÀ³ªºinstruction
+	//å¾vectoræ‰¾å°æ‡‰çš„instruction
 	Opcode findOp;
 
 	for (int i = 0; i < instruction.size(); ++i)
@@ -276,7 +277,7 @@ void toMachineCode(string input, vector<Opcode>& instruction)
 		}
 	}
 
-	//§PÂ_«¬ºA¹ïÀ³
+	//åˆ¤æ–·å‹æ…‹å°æ‡‰
 	if (findOp.type == "R-type")
 	{
 		//add rd,rs1,rs2
@@ -342,13 +343,13 @@ void toMachineCode(string input, vector<Opcode>& instruction)
 
 }
 
-//rs32i«ü¥O¼W¥[¨ìvector¤¤
+//rs32iæŒ‡ä»¤å¢åŠ åˆ°vectorä¸­
 void addinstruction(vector<Opcode>& instruction)
 {
 	string type;
 	ifstream inFile("instruction.csv", ios::in);
 
-	//ÀË¬dÀÉ®×¬O§_¦s¦b
+	//æª¢æŸ¥æª”æ¡ˆæ˜¯å¦å­˜åœ¨
 	if (!inFile)
 	{
 		cerr << "File not found" << endl;
@@ -356,7 +357,7 @@ void addinstruction(vector<Opcode>& instruction)
 		exit(0);
 	}
 
-	//¦pªG¥i¥HÅª¨ìÀÉ®×
+	//å¦‚æœå¯ä»¥è®€åˆ°æª”æ¡ˆ
 	while (getline(inFile, type, ','))
 	{
 		Opcode tmp;
@@ -394,41 +395,23 @@ void addinstruction(vector<Opcode>& instruction)
 
 	}
 
-	/*for (int i = 0; i < instruction.size(); ++i)
-	{
-		if (instruction[i].type == "R-type" || instruction[i].type == "I-typeM")
-		{
-			cout << instruction[i].type << "  " << instruction[i].name << "  Opcode: " << instruction[i].opcode << "  funct3: "
-				<< instruction[i].funct3 << "  funct7: " << instruction[i].funct7 << endl;
-		}
-		else if (instruction[i].type == "I-type" || instruction[i].type == "S-type" || instruction[i].type == "I-typeNum" || instruction[i].type == "B-type")
-		{
-			cout << instruction[i].type << "  " << instruction[i].name << "  Opcode: " << instruction[i].opcode << "  funct3: "
-				<< instruction[i].funct3 << endl;
-		}
-		else if (instruction[i].type == "UJ-type")
-		{
-			cout << instruction[i].type << "  " << instruction[i].name << "  Opcode: " << instruction[i].opcode << endl;
-		}
-	}*/
-
 	inFile.close();
 }
 
 int main()
 {
-	vector<Opcode> instruction;			//¦s¤J¦UºØtype «ü¥O
-	vector<string> implement;			//Àx¦s¨Ï¥ÎªÌ¿é¤Jªº«ü¥O
-	addinstruction(instruction);		//Åª¤Jtype ©M¹ïÀ³ªºopcode, etc.
-	string input;						//input handler
+	vector<Opcode> instruction;			//å­˜å…¥å„ç¨®type æŒ‡ä»¤
+	vector<string> implement;			//å„²å­˜ä½¿ç”¨è€…è¼¸å…¥çš„æŒ‡ä»¤
+	addinstruction(instruction);			//è®€å…¥type å’Œå°æ‡‰çš„opcode, etc.
+	string input;					//input handler
 
 	while (true)
 	{
-		getline(cin, input);
+		getline(cin, input);			//è¼¸å…¥code
 
 		if (input != "exit")
 		{
-			implement.push_back(input);		//¦s©ñ¿é¤Jªº«ü¥O
+			implement.push_back(input);	//å­˜æ”¾è¼¸å…¥çš„æŒ‡ä»¤
 		}
 		else
 		{
@@ -436,7 +419,7 @@ int main()
 		}
 	}
 
-	//§PÂ_¿é¤JªºLabel
+	//åˆ¤æ–·è¼¸å…¥çš„Label
 	label_detected(implement);
 
 	/*for (int i = 0; i < label.size(); ++i)
